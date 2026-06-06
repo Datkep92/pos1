@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#f97316">
+    <title>POS Cafe - Bán hàng</title>
+    <!-- CSS modules - tách riêng cho từng tab, tối ưu tải nhanh -->
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/tables.css">
+    <link rel="stylesheet" href="css/customers.css">
+    <link rel="stylesheet" href="css/history.css">
+    <link rel="stylesheet" href="css/report.css">
+    <link rel="stylesheet" href="css/manager.css">
+    <link rel="stylesheet" href="css/order.css">
+    <link rel="stylesheet" href="css/modals.css">
+</head>
+<body>
+    <div class="app">
+        <div class="header">
+            <div class="logo"><span class="logo-icon">☕</span><span class="logo-text">POS CAFE</span></div>
+            <div class="header-right"><span class="staff-name">👤 Nhân viên</span><span class="time" id="currentTime">--:--</span></div>
+        </div>
+
+        <div class="main-tabs">
+            <div class="tab-btn active" data-tab="tables">🍽️ Bàn</div>
+            <div class="tab-btn" data-tab="customers">👥 Khách</div>
+            <div class="tab-btn" data-tab="history">📜 Lịch sử</div>
+            <div class="tab-btn" data-tab="report">📈 Báo cáo</div>
+            <div class="tab-btn" data-tab="manager">⚙️ Quản lý</div>
+        </div>
+
+        <div class="main-content">
+            <div id="tablesView" class="tab-content active"><div class="tables-grid" id="tablesGrid"></div></div>
+            <div id="customersView" class="tab-content">
+                <div class="customer-header">
+                    <div class="debt-summary"><span>💰 Tổng công nợ</span><span id="totalDebtAmount">0đ</span></div>
+                    <div class="customer-search-bar">
+                        <input type="text" id="customerSearchInput" placeholder="🔍 Tìm theo tên hoặc SĐT..." class="search-input">
+                        <button class="btn-add-customer" id="quickAddCustomerBtn">+ Thêm</button>
+                    </div>
+                </div>
+                <div class="customer-list" id="customerList"></div>
+            </div>
+            <!-- ========== TAB QUẢN LÝ (ADMIN) ========== -->
+<div id="managerView" class="tab-content">
+    <div class="nav-group full-width">
+        <button id="managerPeriodPrevBtn" class="nav-btn">◀</button>
+        <select id="managerViewModeSelect" class="mode-select">
+            <option value="period">Kỳ 20/5/2026 → 19/6/2026</option>
+            <option value="month">Tháng</option>
+            <option value="day">Ngày</option>
+        </select>
+        <button id="managerPeriodNextBtn" class="nav-btn">▶</button>
+    </div>
+
+    <!-- CARD THỐNG KÊ TỔNG HỢP (KPI) -->
+    <div class="card">
+        <div class="manager-grid">
+            <div class="manager-box" id="revenueBox" style="cursor: pointer;">
+                <label>💰 Doanh thu</label>
+                <div class="big-value" id="managerRevenue">0đ</div>
+                <div class="summary-hint">Click chi tiết</div>
+            </div>
+            <div class="manager-box" id="grabBox" style="cursor: pointer;">
+                <label>🚕 Grab</label>
+                <div class="big-value" id="managerGrab">0đ</div>
+                <div class="summary-hint">Click chi tiết</div>
+            </div>
+            <div class="manager-box" id="bankBox" style="cursor: pointer;">
+                <label>🏦 Chuyển khoản</label>
+                <div class="big-value" id="managerBank">0đ</div>
+                <div class="summary-hint">Click chi tiết</div>
+            </div>
+            <div class="manager-box" id="cashBox" style="cursor: pointer;">
+                <label>💵 Thực nhận</label>
+                <div class="big-value" id="managerCash">0đ</div>
+                <div class="summary-hint">Click chi tiết</div>
+            </div>
+            <div class="manager-box" id="expenseBox" style="cursor: pointer;">
+                <label>📉 Chi phí (NV)</label>
+                <div class="big-value" id="managerExpense">0đ</div>
+                <div class="summary-hint">Click danh sách</div>
+            </div>
+            <div class="manager-box" id="debtOccurBox" style="cursor: pointer;">
+                <label>📊 Công nợ phát sinh</label>
+                <div class="big-value" id="managerDebt">0đ</div>
+                <div class="summary-hint">Click chi tiết</div>
+            </div>
+            <div class="manager-box" id="adminExpenseBox" style="cursor: pointer;">
+                <label>📋 Tổng CP Quản lý</label>
+                <div class="big-value" id="managerAdminExpense">0đ</div>
+                <div class="summary-hint">Click xem chi tiết</div>
+            </div>
+            <div class="manager-box" id="totalDebtBox" style="cursor: pointer;">
+                <label>🏦 TỔNG CÔNG NỢ</label>
+                <div class="big-value" id="managerTotalDebt">0đ</div>
+                <div class="summary-hint">Click xem danh sách nợ</div>
+            </div>
+            <div class="manager-box employee-box" id="employeeBox" style="cursor: pointer;">
+                <label>👥 NHÂN VIÊN</label>
+                <div class="big-value" id="managerTotalSalary">0đ</div>
+                <div class="summary-hint">Click quản lý</div>
+            </div>
+            <div class="manager-box" id="netIncomeBox" style="cursor: pointer;">
+                <label>💰 THU NHẬP RÒNG</label>
+                <div class="big-value" id="managerNetIncome">0đ</div>
+                <div class="summary-hint">Click chi tiết</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thống kê đồ uống -->
+    <div class="card">
+        <div class="card-header toggle-header" style="cursor: pointer;">
+            <h2>📊 Thống kê đồ uống</h2>
+            <span class="toggle-icon">▼</span>
+        </div>
+        <div class="card-body" id="managerDrinkStats">
+            <div class="empty-state">Đang tải...</div>
+        </div>
+    </div>
+
+    <!-- Cảnh báo tồn kho thấp -->
+    <div class="card">
+        <div class="card-header toggle-header" style="cursor: pointer;">
+            <h2>⚠️ Cảnh báo tồn kho thấp</h2>
+            <span class="toggle-icon">▼</span>
+        </div>
+        <div class="card-body" id="managerLowStockAlert">
+            <div class="empty-state">Đang tải...</div>
+        </div>
+    </div>
+
+    <!-- Chi phí nhân viên -->
+    <div class="card collapsible">
+        <div class="card-header toggle-header" style="cursor: pointer;">
+            <h2>📋 Chi Phí Nhân Viên</h2>
+            <span class="toggle-icon">▼</span>
+        </div>
+        <div class="card-body" id="managerExpenseList"></div>
+    </div>
+
+    <!-- Công nợ khách hàng -->
+    <div class="card collapsible collapsed">
+        <div class="card-header toggle-header" style="cursor: pointer;">
+            <h2>🧾 Công Nợ Khách Hàng</h2>
+            <span class="toggle-icon">▼</span>
+        </div>
+        <div class="card-body" id="managerDebtList"></div>
+    </div>
+</div>
+            <div id="historyView" class="tab-content">
+                <div class="history-controls">
+                    <button class="nav-btn" id="prevDayBtn">◀</button>
+                    <div class="date-display">📅 <span id="historyDate">--/--/----</span></div>
+                    <button class="nav-btn" id="nextDayBtn">▶</button>
+                    <select id="historyFilter" class="filter-select">
+                        <option value="all">📋 Tất cả</option><option value="dinein">🍽️ Tại chỗ</option>
+                        <option value="takeaway">🛵 Mang đi</option><option value="grab">🚕 Grab</option>
+                        <option value="cash">💰 Tiền mặt</option><option value="transfer">💳 Chuyển khoản</option>
+                        <option value="debt_payment">💢 Thanh toán nợ</option>
+                        <option value="cancelled">❌ Đã hủy</option>
+                    </select>
+                </div>
+                <div class="history-list" id="historyList"></div>
+            </div>
+           <div id="reportView" class="tab-content">
+    <div class="report-controls">
+        <button class="nav-btn" id="reportPrevDayBtn">◀</button>
+        <div class="date-display">📅 <span id="reportDate">--/--/----</span></div>
+        <button class="nav-btn" id="reportNextDayBtn">▶</button>
+    </div>
+    <div class="report-stats" id="reportStats"></div>
+    <!-- Form nhập số dư cuối ngày nằm ngay dưới -->
+    <div class="daily-balance-form">
+    <div class="balance-row">
+    <label>💵 Tiền mặt thực nhận:</label>
+    <input type="number" id="actualCashInput" class="balance-input" placeholder="0đ" step="1000" value="0">
+    <button id="submitActualCashBtn" class="btn-submit-balance">📤 Gửi báo cáo</button>
+</div>
+<div class="actual-cash-preview" id="actualCashPreview" style="display: none;"></div>
+    <div class="balance-note">* Nhập số tiền mặt thực tế bàn giao cuối ca, hệ thống sẽ tự tính số dư để lại quán.</div>
+</div>
+</div>
+        </div>
+
+        <div class="float-buttons">
+            <button class="float-btn primary" id="createOrderBtn"><span class="float-icon">➕</span><span class="float-label">TẠO ĐƠN</span></button>
+            <button class="float-btn cost" id="staffCostFloatBtn"><span class="float-icon">📊</span><span class="float-label">CHI PHÍ NV</span></button>
+        </div>
+    </div>
+
+    <!-- MODAL TẠO ĐƠN - BỐ CỤC 3 CỘT -->
+<div class="modal" id="orderModal">
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <span class="modal-title">🛒 Tạo đơn hàng</span>
+            <span class="modal-close" onclick="closeModal('orderModal')">&times;</span>
+        </div>
+        <div class="modal-body order-modal-body">
+            <!-- BỐ CỤC 3 CỘT -->
+            <div class="order-three-columns">
+                <!-- CỘT 1: DANH MỤC -->
+                <div class="order-categories-column" id="orderCategoriesColumn"></div>
+                
+                <!-- CỘT 2: MENU -->
+                <div class="order-menu-column">
+                    <div class="menu-grid" id="menuGrid"></div>
+                </div>
+                
+                <!-- CỘT 3: GIỎ HÀNG -->
+                <div class="order-cart-column">
+                    <div class="cart-header">🛒 Giỏ hàng</div>
+                    <div class="cart-items-list" id="cartItemsList"></div>
+                    <div class="cart-total-section">
+                        <div class="total-row">
+                            <span>Tổng cộng:</span>
+                            <span id="cartTotalAmount">0đ</span>
+                        </div>
+                        <div class="cart-action-buttons" id="cartFooterActions"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- MODAL CHI TIẾT BÀN -->
+    <div class="modal" id="tableDetailModal">
+        <div class="modal-content">
+            <div class="modal-header"><span class="modal-title" id="detailTableName">🪑 Bàn</span><span class="modal-close" onclick="closeModal('tableDetailModal')">&times;</span></div>
+            <div class="modal-body">
+                <div class="cart-items" id="detailItems"></div>
+                <div class="cart-total" id="detailSummary"></div>
+                <div class="cart-actions" id="detailActions"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL THANH TOÁN (3 nút) -->
+    <div class="modal" id="paymentMethodModal">
+        <div class="modal-content" style="max-width:350px;">
+            <div class="modal-header"><span class="modal-title">💸 Chọn phương thức thanh toán</span><span class="modal-close" onclick="closeModal('paymentMethodModal')">&times;</span></div>
+            <div class="modal-body">
+                <div class="payment-modal-buttons">
+                    <button class="payment-cash" id="paymentCashBtn">💰 Tiền mặt</button>
+                    <button class="payment-transfer" id="paymentTransferBtn">💳 Chuyển khoản</button>
+                    <button class="payment-debt" id="paymentDebtBtn">💢 Ghi nợ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CHỌN KHÁCH (ghi nợ) -->
+    <div class="modal" id="customerSelectorModal">
+        <div class="modal-content"><div class="modal-header"><span class="modal-title">👥 Chọn khách hàng</span><span class="modal-close" onclick="closeModal('customerSelectorModal')">&times;</span></div>
+        <div class="modal-body"><input type="text" id="customerSelectorSearch" class="form-input" placeholder="🔍 Tìm khách..."><div id="customerSelectorList" class="customer-selector-list"></div><button class="btn-create-customer" id="createCustomerFromSelectorBtn">➕ Tạo khách mới</button></div></div>
+    </div>
+
+    <!-- MODAL CHIA HÓA ĐƠN -->
+    <div class="modal" id="splitBillModal">
+        <div class="modal-content"><div class="modal-header"><span class="modal-title">🧾 Chia hóa đơn</span><span class="modal-close" onclick="closeModal('splitBillModal')">&times;</span></div>
+        <div class="modal-body"><div id="splitItemsList" class="split-items-list"></div><div class="split-total">Tổng phần chia: <span id="splitTotalAmount">0đ</span></div>
+        <div class="form-actions"><button class="btn-save" id="confirmSplitBtn">✅ Thanh toán phần đã chọn</button><button class="btn-cancel" onclick="closeModal('splitBillModal')">Hủy</button></div></div></div>
+    </div>
+
+    <!-- MODAL CHUYỂN MÓN -->
+    <div class="modal" id="transferItemsModal">
+        <div class="modal-content"><div class="modal-header"><span class="modal-title">🔄 Chuyển món sang bàn khác</span><span class="modal-close" onclick="closeModal('transferItemsModal')">&times;</span></div>
+        <div class="modal-body"><div id="transferItemsList" class="transfer-items-list"></div><input type="text" id="transferTargetTable" class="form-input" placeholder="Tên bàn đích (VD: Bàn 05)" style="margin-top:12px;">
+        <div class="form-actions"><button class="btn-save" id="confirmTransferBtn">✅ Chuyển món</button><button class="btn-cancel" onclick="closeModal('transferItemsModal')">Hủy</button></div></div></div>
+    </div>
+
+    <!-- MODAL GỘP BÀN -->
+    <div class="modal" id="mergeTableModal">
+        <div class="modal-content"><div class="modal-header"><span class="modal-title">🔗 Chọn bàn để gộp</span><span class="modal-close" onclick="closeModal('mergeTableModal')">&times;</span></div>
+        <div class="modal-body"><div id="mergeTablesList" class="merge-tables-list"></div><div class="form-actions"><button class="btn-cancel" onclick="closeModal('mergeTableModal')">Hủy</button></div></div></div>
+    </div>
+
+    <!-- MODAL XÓA BÀN -->
+    <div class="modal" id="deleteTableModal">
+        <div class="modal-content" style="max-width:300px;"><div class="modal-header"><span class="modal-title">⚠️ Xác nhận xóa bàn</span><span class="modal-close" onclick="closeModal('deleteTableModal')">&times;</span></div>
+        <div class="modal-body"><p>Bạn có chắc muốn xóa bàn này? Toàn bộ món sẽ bị hủy.</p><div class="form-actions"><button class="btn-save" id="confirmDeleteTableBtn" style="background:#dc2626;">Xóa</button><button class="btn-cancel" onclick="closeModal('deleteTableModal')">Hủy</button></div></div></div>
+    </div>
+
+    <!-- MODAL CHI TIẾT KHÁCH -->
+    <div class="modal" id="customerDetailModal">
+        <div class="modal-content"><div class="modal-header"><span class="modal-title">👤 Chi tiết khách</span><span class="modal-close" onclick="closeModal('customerDetailModal')">&times;</span></div>
+        <div class="modal-body" id="customerDetailContent"></div></div>
+    </div>
+
+    <!-- MODAL THANH TOÁN NỢ -->
+    <div class="modal" id="debtPaymentModal">
+        <div class="modal-content"><div class="modal-header"><span class="modal-title">💸 Thanh toán nợ</span><span class="modal-close" onclick="closeModal('debtPaymentModal')">&times;</span></div>
+        <div class="modal-body"><p id="debtPaymentInfo"></p><input type="number" id="debtPaymentAmount" class="form-input" placeholder="Số tiền thanh toán" step="1000">
+        <div class="form-actions"><button class="btn-save" id="confirmDebtPaymentBtn">✅ Xác nhận</button><button class="btn-cancel" onclick="closeModal('debtPaymentModal')">Hủy</button></div></div></div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+<!-- MODAL CHI TIẾT GIAO DỊCH -->
+<div class="modal" id="transactionDetailModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="modal-title">🧾 Chi tiết giao dịch</span>
+            <span class="modal-close" onclick="closeModal('transactionDetailModal')">&times;</span>
+        </div>
+        <div class="modal-body" id="transactionDetailBody">
+            <!-- Nội dung sẽ được render bằng JS -->
+        </div>
+    </div>
+</div>
+<!-- MODAL NHẬP SỐ DƯ CUỐI NGÀY -->
+<div class="modal" id="dailyBalanceModal">
+    <div class="modal-content" style="max-width: 350px;">
+        <div class="modal-header">
+            <span class="modal-title">🏦 Nhập số dư cuối ngày</span>
+            <span class="modal-close" onclick="closeModal('dailyBalanceModal')">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>💰 Số dư cuối ngày (tiền mặt để lại quán)</label>
+                <input type="number" id="cashKeptInput" class="form-input" placeholder="0đ" step="1000" value="0">
+                <small style="font-size: 11px; color: #64748b;">Số tiền này sẽ là số dư đầu ngày hôm sau</small>
+            </div>
+            <div class="form-actions">
+                <button class="btn-save" id="saveDailyBalanceBtn">💾 Lưu</button>
+                <button class="btn-cancel" onclick="closeModal('dailyBalanceModal')">Hủy</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- MODAL CHI PHÍ -->
+<div class="modal" id="costModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="modal-title">📊 Thêm chi phí</span>
+            <span class="modal-close" onclick="closeModal('costModal')">&times;</span>
+        </div>
+        <div class="modal-body">
+            <input type="text" id="costName" class="form-input" placeholder="Tên chi phí">
+            <div class="cost-categories" id="costCategoriesList"></div>
+            <div class="quick-money">
+                <button type="button" class="quick-money-btn" data-amount="35000">35k</button>
+                <button type="button" class="quick-money-btn" data-amount="40000">40k</button>
+                <button type="button" class="quick-money-btn" data-amount="50000">50k</button>
+                <button type="button" class="quick-money-btn" data-amount="55000">55k</button>
+                <button type="button" class="quick-money-btn" data-amount="60000">60k</button>
+            </div>
+            <input type="number" id="costAmount" class="form-input" placeholder="Số tiền" step="1000">
+            <button class="btn-save" id="saveCostBtn">💾 Lưu chi phí</button>
+            <div class="cost-history-title">📋 Chi phí hôm nay</div>
+            <div id="todayCostList" class="cost-list"></div>
+            <div class="cost-history-title">📜 Tổng chi phí tháng này</div>
+            <div id="monthCostTotal" class="cost-total">0đ</div>
+        </div>
+    </div>
+</div>
+<!-- MODAL CHI TIẾT CHI PHÍ -->
+<div class="modal" id="costDetailModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="modal-title">📋 Danh sách chi phí</span>
+            <span class="modal-close" onclick="closeModal('costDetailModal')">&times;</span>
+        </div>
+        <div class="modal-body" id="costDetailList"></div>
+    </div>
+</div>
+<!-- Toast giao dịch gần đây -->
+<div id="recentToast" class="recent-toast">
+    <div id="recentToastList" class="recent-toast-list"></div>
+</div>
+<!-- MODAL HIỂN THỊ LỊCH SỬ CHI TIẾT (ADMIN) -->
+<div class="modal" id="historyDetailModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="modal-title" id="historyDetailTitle">📋 Chi tiết</span>
+            <span class="modal-close" onclick="closeModal('historyDetailModal')">&times;</span>
+        </div>
+        <div class="modal-body" id="historyDetailContent">
+            <!-- Nội dung sẽ được render bằng JS -->
+        </div>
+    </div>
+</div>
+<!-- MODAL CHI PHÍ NHÂN VIÊN (STAFF COST) -->
+<div class="modal" id="staffCostModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="modal-title" id="staffExpensePopupTitle">📊 Thêm chi phí Nhân viên</span>
+            <span class="modal-close" onclick="closeModal('staffCostModal')">&times;</span>
+        </div>
+        <div class="modal-body">
+            <input type="text" id="staffExpenseNameInput" class="form-input" placeholder="Tên chi phí nhân viên">
+            <div class="cost-categories" id="staffRecentCategoriesList">
+                <div class="empty-text">Chưa có danh mục</div>
+            </div>
+            <div class="quick-money">
+                <button type="button" class="quick-money-btn" data-amount="35000">35k</button>
+                <button type="button" class="quick-money-btn" data-amount="40000">40k</button>
+                <button type="button" class="quick-money-btn" data-amount="50000">50k</button>
+                <button type="button" class="quick-money-btn" data-amount="55000">55k</button>
+                <button type="button" class="quick-money-btn" data-amount="60000">60k</button>
+                <button type="button" class="quick-money-btn" data-amount="100000">100k</button>
+                <button type="button" class="quick-money-btn" data-amount="200000">200k</button>
+            </div>
+            <input type="number" id="staffExpenseAmount" class="form-input" placeholder="Số tiền" step="1000">
+            <input type="number" id="staffExpenseQty" class="form-input" placeholder="Số lượng" value="1" step="1">
+            <button class="btn-save" id="saveStaffExpenseBtn">💾 Lưu chi phí Nhân viên</button>
+            <div class="cost-history-title">📋 Chi phí nhân viên hôm nay</div>
+            <div id="staffTodayCostList" class="cost-list"></div>
+            <div class="cost-history-title">📜 Tổng chi phí nhân viên tháng này</div>
+            <div id="staffMonthCostTotal" class="cost-total">0đ</div>
+        </div>
+    </div>
+</div>
+<!-- MODAL LỊCH SỬ CHI PHÍ -->
+<div class="modal" id="costHistoryModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="modal-title" id="costHistoryTitle">📜 Lịch sử chi phí</span>
+            <span class="modal-close" onclick="closeModal('costHistoryModal')">&times;</span>
+        </div>
+        <div class="modal-body" id="costHistoryList"></div>
+    </div>
+</div>
+<!-- MODAL CHI TIẾT KHÁCH -->
+<div class="modal" id="customerDetailModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="modal-title">👤 Chi tiết khách</span>
+            <span class="modal-close" onclick="closeModal('customerDetailModal')">&times;</span>
+        </div>
+        <div class="modal-body" id="customerDetailContent"></div>
+    </div>
+</div>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="db.js"></script>
+    <!-- Core modules (tách từ pos.js) -->
+    <script src="app.js"></script>
+    <script src="realtime.js"></script>
+    <script src="ingredients.js"></script>
+    <script src="report.js"></script>
+    <script src="cost.js"></script>
+    <script src="split-transfer-merge.js"></script>
+    <!-- Feature modules -->
+    <script src="order.js"></script>
+    <script src="tables.js"></script>
+    <script src="customers.js"></script>
+    <script src="history.js"></script>
+    <script src="staff-cost.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof initStaffCost === 'function') initStaffCost();
+    });
+</script>
+</body>
+</html>
