@@ -1,0 +1,297 @@
+/* ============================================================
+   ORDER.CSS - Modal Tạo Đơn / Thêm Món (Order Modal)
+   POS Cafe - Hỗ trợ iPad/iPhone/Tablet ngang-dọc
+   ============================================================ */
+
+.order-modal-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* ===== CATEGORY ===== */
+.order-categories {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 12px;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+    -webkit-overflow-scrolling: touch;
+}
+
+.category-chip {
+    padding: 8px 16px;
+    background: #f1f5f9;
+    border-radius: 30px;
+    font-size: 13px;
+    white-space: nowrap;
+    cursor: pointer;
+    border: none;
+    -webkit-appearance: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.category-chip.active {
+    background: var(--primary);
+    color: white;
+}
+
+/* ===== MAIN LAYOUT ===== */
+.order-main-layout {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    flex: 1;
+    min-height: 0;
+}
+
+/* ===== MENU GRID ===== */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.menu-item,
+.menu-item-variant {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.05s;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.menu-item:active {
+    transform: scale(0.97);
+}
+
+.menu-item-name {
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.menu-item-price {
+    font-size: 12px;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.variant-group {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+.variant-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 11px;
+    cursor: pointer;
+    -webkit-appearance: none;
+}
+
+/* ===== CART PANEL ===== */
+.cart-panel {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border);
+    width: 320px;
+    flex-shrink: 0;
+}
+
+.cart-title {
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.cart-items {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 12px;
+    min-height: 120px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    gap: 8px;
+}
+
+.cart-item > span:first-child {
+    font-weight: 500;
+    color: var(--text);
+    flex: 2;
+    word-break: break-word;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.cart-item > span:first-child span { order: 1; }
+.cart-item > span:first-child .time-text { order: 2; font-size: 11px; color: #64748b; }
+
+.cart-item > span:last-child {
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.cart-item button {
+    background: transparent;
+    border: none;
+    color: var(--danger);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 20px;
+    transition: 0.05s linear;
+}
+
+.cart-item button:active {
+    background: #fee2e2;
+    transform: scale(0.96);
+}
+
+.cart-total {
+    font-weight: 700;
+    text-align: right;
+    padding: 10px 0;
+    border-top: 1px solid var(--border);
+}
+
+.cart-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+}
+
+.cart-total { border-top: none; padding-top: 0; }
+
+.cart-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.cart-action-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 30px;
+    border: none;
+    font-weight: 600;
+    font-size: 12px;
+    cursor: pointer;
+    -webkit-appearance: none;
+}
+
+.cart-action-btn.table { background: var(--primary); color: white; }
+.cart-action-btn.cash { background: var(--success); color: white; }
+.cart-action-btn.transfer { background: var(--info); color: white; }
+.cart-action-btn.grab { background: #8b5cf6; color: white; }
+.cart-action-btn.debt { background: var(--warning); color: white; }
+
+/* ===== MOBILE (dọc) ===== */
+@media (max-width: 640px) {
+    .order-main-layout {
+        flex-direction: column;
+    }
+    .menu-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .cart-panel {
+        width: 100%;
+    }
+}
+
+/* Mobile nhỏ */
+@media (max-width: 400px) {
+    .menu-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+    .menu-item, .menu-item-variant { padding: 8px 4px; }
+    .menu-item-name { font-size: 11px; }
+    .menu-item-price { font-size: 10px; }
+    .cart-action-btn { font-size: 10px; padding: 6px; }
+}
+
+/* ===== TABLET - 6 CỘT ===== */
+@media (min-width: 641px) and (max-width: 1024px) {
+    .menu-grid {
+        grid-template-columns: repeat(6, 1fr) !important;
+        gap: 8px;
+    }
+    .menu-item, .menu-item-variant { padding: 8px 4px; }
+    .menu-item-name { font-size: 11px; }
+    .menu-item-price { font-size: 10px; }
+    .variant-btn { padding: 2px 8px; font-size: 9px; }
+}
+
+/* Tablet dọc */
+@media (min-width: 641px) and (max-width: 768px) and (orientation: portrait) {
+    .order-main-layout { flex-direction: column; }
+    .menu-grid { grid-template-columns: repeat(4, 1fr) !important; }
+    .cart-panel { width: 100%; }
+}
+
+/* Tablet ngang - POS chuẩn */
+@media (orientation: landscape) and (min-width: 768px) and (max-width: 1024px) {
+    .order-main-layout { flex-direction: row; }
+    .menu-grid { grid-template-columns: repeat(6, 1fr) !important; }
+    .cart-panel { width: 280px; }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+    .menu-grid { grid-template-columns: repeat(6, 1fr); gap: 12px; }
+    .cart-panel { width: 340px; }
+    .menu-item, .menu-item-variant { padding: 14px 10px; }
+    .menu-item-name { font-size: 14px; }
+    .menu-item-price { font-size: 13px; }
+}
+
+/* ===== DETAIL ACTIONS (modal chi tiết bàn) ===== */
+#detailActions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.edit-actions, .payment-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+
+.payment-actions .cart-action-btn.cash { background: var(--success); color: white; }
+.payment-actions .cart-action-btn.transfer { background: var(--info); color: white; }
+.payment-actions .cart-action-btn.debt { background: var(--warning); color: white; }
